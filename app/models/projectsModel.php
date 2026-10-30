@@ -4,15 +4,22 @@ namespace App\Models\ProjectsModel;
 
 use \PDO;
 
-// Récupère les projets avec le pseudo du créa'tif associé.
-function findAll(PDO $connexion): array
+function findAll(PDO $connexion, int $page = 1): array
 {
+    $limit = 10;
+    $offset = ($page - 1) * $limit;
+
     $sql = "SELECT p.id, p.titre, p.resume, p.dateCreation, p.image,
                    c.pseudo AS creatif_pseudo
             FROM projets p
             INNER JOIN creatifs c ON c.id = p.creatif
-            ORDER BY p.dateCreation DESC, p.id DESC;";
+            ORDER BY p.dateCreation DESC, p.id DESC
+            LIMIT :limit OFFSET :offset;";
 
-    $rs = $connexion->query($sql);
+    $rs = $connexion->prepare($sql);
+    $rs->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $rs->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $rs->execute();
+
     return $rs->fetchAll(PDO::FETCH_ASSOC);
 }
