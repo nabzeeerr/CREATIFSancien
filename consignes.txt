@@ -1,0 +1,59 @@
+CONSIGNES EXAMEN SCRIPTS SERVEURS - SESSION 1 - 2022
+
+1. LES ROUTES:
+  Accueil :
+  PATTERN / ou /projects
+  > Liste des projets (en afficher uniquement 10) avec une pagination pour voir les suivants
+  > Le résumé doit être tronqué à 100 caractères
+
+  Détails d'un projet
+  PATTERN: /projects/id/slug.html
+
+  Suppression d'un projet
+  PATTERN: /projects/delete/id/slug.html
+
+ Ajout d'un projet
+  PATTERN: /projects/add/form.html
+  > Formulaire d'ajout
+
+  PATTERN: /projects/add/insert.html
+  > Ajout .. redirection vers la page d'accueil
+
+  Modification d'un projet
+  PATTERN: /projects/id/slug/edit/form.html
+  > Formulaire de Modification
+
+  PATTERN: /projects/id/slug/edit/update.html
+  > Modification .. redirection vers la page d'accueil
+
+
+2. LA FONCTION:
+ATTENTION: il n'y a pas de slugs dans les tables !
+> Créez une fonction slugify() qui transforme une chaîne de caractères en slug
+  En mettant tout en minuscules,
+  En remplaçant les ' ', '.', '!', '?', ''' et les ';' en '-',
+  En remplaçant les 'é', 'è', 'ê', 'à', 'ç', 'â' en caractère non accentué
+
+  > Créez une fonction truncate(x) qui coupe une chaîne de caractère 
+    à l'espace juste avant le xème caractère...
+    Si le texte coupé se termine par un signe de ponctuation ('.', ',', ';', ':', '!', '?'),
+    supprimez-le avant d'ajouter les '...'
+    Si la chaîne fait x caractères ou moins, elle est renvoyée telle quelle (sans '...')
+
+3. NE PAS OUBLIER
+Pensez à
+  - découper le template en partials
+  - découper les routeurs
+  - Mettre des commentaires dans les Ctrl et les modèles
+  - Mettre des commentaires dans les vues
+
+4. LA REMISE
+> Ce qui doit être uploadé sur le campus, c'est un export Repomix de votre projet
+  (un seul fichier, pas de zip du dossier)
+  Depuis la racine du projet, au choix :
+    npx repomix                       (génère repomix-output.xml)
+    npx repomix --style markdown      (génère repomix-output.md)
+  > Uploadez le fichier généré (.xml ou .md) tel quel, sans le modifier
+  > Avant d'uploader, vérifiez que l'export contient bien vos routeurs, contrôleurs,
+    modèles, vues et partials
+
