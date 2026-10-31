@@ -4,10 +4,23 @@ namespace App\Controllers\ProjectsController;
 
 use PDO;
 
-// Affiche la liste des projets.
+// Affiche la liste des projets avec pagination.
 function index(PDO $connexion): void
 {
-    $projects = \App\Models\ProjectsModel\findAll($connexion);
+    // Récupère le numéro de page depuis l'URL.
+    $page = max(1, (int) ($_GET['page'] ?? 1));
+
+    // Compte les projets et calcule le nombre de pages.
+    $totalProjects = \App\Models\ProjectsModel\countAll($connexion);
+    $totalPages = (int) ceil($totalProjects / 10);
+
+    // Empêche de demander une page inexistante.
+    $page = min($page, max(1, $totalPages));
+
+    // Récupère les projets de la page actuelle.
+    $projects = \App\Models\ProjectsModel\findAll($connexion, $page);
+
+    // Récupère les données de la colonne latérale.
     $creatifs = \App\Models\CreatifsModel\findAll($connexion);
     $tags = \App\Models\TagsModel\findAll($connexion);
 

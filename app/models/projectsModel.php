@@ -23,3 +23,10 @@ function findAll(PDO $connexion, int $page = 1): array
 
     return $rs->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function countAll(PDO $connexion): int
+{
+    $sql = "SELECT COUNT(*) FROM projets";
+
+    return (int) $connexion->query($sql)->fetchColumn();
+}

@@ -49,10 +49,41 @@ $titrePage = "Les projets - CREA'TIFS";
                 </article>
             <?php endforeach; ?>
 
-            <!-- La pagination sera ajoutée ensuite. -->
+            <!-- Pagination des projets -->
+            <nav aria-label="Pagination des projets">
+                <ul class="pagination justify-content-center">
+
+                    <?php if ($page > 1): ?>
+                        <li class="page-item">
+                            <a class="page-link"
+                            href="?page=<?= $page - 1 ?>">
+                                Précédent
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <li class="page-item <?= $i === $page ? 'active' : '' ?>">
+                            <a class="page-link" href="?page=<?= $i ?>">
+                                <?= $i ?>
+                            </a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <?php if ($page < $totalPages): ?>
+                        <li class="page-item">
+                            <a class="page-link"
+                            href="?page=<?= $page + 1 ?>">
+                                Suivant
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                </ul>
+            </nav>
+
         </div>
 
-        <!-- Colonne latérale commune -->
         <?php require ROOT_PATH . '/app/views/partials/sidebar.php'; ?>
 
     </div>
