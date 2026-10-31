@@ -42,7 +42,7 @@ $titrePage = "Les projets - CREA'TIFS";
                             </p>
 
                             <p>
-                                <?= htmlspecialchars($project['resume'] ?? '') ?>
+                                <?= htmlspecialchars(truncate($project['resume'] ?? '', 100)) ?>
                             </p>
                         </div>
                     </div>
