@@ -23,3 +23,25 @@ function truncate(string $texte, int $limite): string
 
     return $texte . '...';
 }
+
+// Transforme un texte en slug pour les URLs.
+function slugify(string $texte): string
+{
+    $texte = mb_strtolower($texte, 'UTF-8');
+
+    // Remplace les espaces et la ponctuation demandée par des tirets.
+    $texte = str_replace(
+        [' ', '.', '!', '?', "'", ';'],
+        '-',
+        $texte
+    );
+
+    // Supprime les accents.
+    $texte = str_replace(
+        ['é', 'è', 'ê', 'à', 'ç', 'â'],
+        ['e', 'e', 'e', 'a', 'c', 'a'],
+        $texte
+    );
+
+    return $texte;
+}

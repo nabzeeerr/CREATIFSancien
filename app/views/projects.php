@@ -34,7 +34,9 @@ $titrePage = "Les projets - CREA'TIFS";
 
                         <div class="col-md-8">
                             <h3>
-                                <?= htmlspecialchars($project['titre']) ?>
+                                <a href="/CREATIFS/projects/<?= (int) $project['id'] ?>/<?= htmlspecialchars(slugify($project['titre'])) ?>.html">
+                                    <?= htmlspecialchars($project['titre']) ?>
+                                </a>
                             </h3>
 
                             <p class="ct-byline">

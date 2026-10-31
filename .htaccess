@@ -1,0 +1,7 @@
+RewriteEngine On
+
+# Redirige les URLs des projets vers le routeur.
+RewriteRule ^projects/([0-9]+)/([^/]+)\.html$ routers/projectsRouter.php?action=show&id=$1&slug=$2 [L,QSA]
+
+# Redirige la liste des projets.
+RewriteRule ^projects/?$ routers/projectsRouter.php [L,QSA]

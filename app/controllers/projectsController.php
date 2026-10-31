@@ -26,3 +26,26 @@ function index(PDO $connexion): void
 
     require ROOT_PATH . '/app/views/projects.php';
 }
+
+function show(PDO $connexion, int $id, string $slug): void
+{
+    $project = \App\Models\ProjectsModel\findById($connexion, $id);
+
+    if (!$project) {
+        http_response_code(404);
+        echo "Projet introuvable.";
+        return;
+    }
+
+    $expectedSlug = slugify($project['titre']);
+
+    if ($slug !== $expectedSlug) {
+        http_response_code(404);
+        echo "URL incorrecte.";
+        return;
+    }
+
+    $tags = \App\Models\TagsModel\findAllByProjectId($connexion, $id);
+
+    require ROOT_PATH . '/app/views/project.php';
+}

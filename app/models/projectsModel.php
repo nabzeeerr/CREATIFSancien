@@ -30,3 +30,17 @@ function countAll(PDO $connexion): int
 
     return (int) $connexion->query($sql)->fetchColumn();
 }
+
+function findById(PDO $connexion, int $id): array|false
+{
+    $sql = "SELECT p.*, c.pseudo AS creatif_pseudo
+            FROM projets p
+            INNER JOIN creatifs c ON c.id = p.creatif
+            WHERE p.id = :id;";
+
+    $rs = $connexion->prepare($sql);
+    $rs->bindValue(':id', $id, PDO::PARAM_INT);
+    $rs->execute();
+
+    return $rs->fetch(PDO::FETCH_ASSOC);
+}
