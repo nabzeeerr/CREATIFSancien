@@ -136,3 +136,62 @@ function insert(PDO $connexion): void
     header('Location: /CREATIFS/projects');
     exit;
 }
+
+function editForm(PDO $connexion, int $id, string $slug): void
+{
+
+    $project = \App\Models\ProjectsModel\findById($connexion, $id);
+
+    if (!$project || slugify($project['titre']) !== $slug) {
+        http_response_code(404);
+        echo "Projet introuvable.";
+        return;
+    }
+
+    $creatifs = \App\Models\CreatifsModel\findAll($connexion);
+
+    require ROOT_PATH . '/app/views/editProject.php';
+}
+
+function update(PDO $connexion, int $id, string $slug): void
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        echo "Méthode non autorisée.";
+        return;
+    }
+
+    $existingProject = \App\Models\ProjectsModel\findById($connexion, $id);
+
+    if (!$existingProject || slugify($existingProject['titre']) !== $slug) {
+        http_response_code(404);
+        echo "Projet introuvable.";
+        return;
+    }
+
+    $project = [
+        'titre' => trim($_POST['titre'] ?? ''),
+        'resume' => trim($_POST['resume'] ?? ''),
+        'texte' => trim($_POST['texte'] ?? ''),
+        'dateCreation' => $_POST['dateCreation'] ?? '',
+        'image' => trim($_POST['image'] ?? ''),
+        'creatif' => (int) ($_POST['creatif'] ?? 0)
+    ];
+
+    if ($project['titre'] === '' || $project['dateCreation'] === '' || $project['creatif'] <= 0) {
+        http_response_code(400);
+        echo "Veuillez remplir les champs obligatoires.";
+        return;
+    }
+
+    $success = \App\Models\ProjectsModel\update($connexion, $id, $project);
+
+    if (!$success) {
+        http_response_code(500);
+        echo "Impossible de modifier le projet.";
+        return;
+    }
+
+    header('Location: /CREATIFS/projects');
+    exit;
+}

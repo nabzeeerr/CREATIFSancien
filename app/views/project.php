@@ -45,11 +45,18 @@ $titrePage = htmlspecialchars($project['titre']) . " - CREA'TIFS";
                 <?php endforeach; ?>
             </article>
             <div class="mt-3">
+
+                <a class="btn btn-warning"
+                    href="/CREATIFS/projects/<?= (int) $project['id'] ?>/<?= urlencode(slugify($project['titre'])) ?>/edit/form.html">
+                    Modifier ce projet
+                </a>
+
                 <a class="btn btn-danger"
                     href="/CREATIFS/routers/projectsRouter.php?action=confirmDelete&id=<?= (int) $project['id'] ?>&slug=<?= urlencode(slugify($project['titre'])) ?>"
                 >
                     Supprimer ce projet
                 </a>
+                
             </div>
         </div>
 

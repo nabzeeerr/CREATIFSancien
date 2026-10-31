@@ -91,3 +91,27 @@ function insert(PDO $connexion, array $project): bool
         ':creatif' => $project['creatif']
     ]);
 }
+
+function update(PDO $connexion, int $id, array $project): bool
+{
+    $sql = "UPDATE projets
+            SET titre = :titre,
+                resume = :resume,
+                texte = :texte,
+                dateCreation = :dateCreation,
+                image = :image,
+                creatif = :creatif
+            WHERE id = :id";
+
+    $rs = $connexion->prepare($sql);
+
+    return $rs->execute([
+        ':titre' => $project['titre'],
+        ':resume' => $project['resume'],
+        ':texte' => $project['texte'],
+        ':dateCreation' => $project['dateCreation'],
+        ':image' => $project['image'],
+        ':creatif' => $project['creatif'],
+        ':id' => $id
+    ]);
+}

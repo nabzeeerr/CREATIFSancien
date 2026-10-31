@@ -15,15 +15,18 @@ if ($action === 'show') {
     $slug = $_GET['slug'] ?? '';
 
     \App\Controllers\ProjectsController\show($connexion, $id, $slug);
+} 
 
-} elseif ($action === 'confirmDelete') {
+elseif ($action === 'confirmDelete') {
     // Affiche la confirmation de suppression.
     $id = (int) ($_GET['id'] ?? 0);
     $slug = $_GET['slug'] ?? '';
 
     \App\Controllers\ProjectsController\confirmDelete($connexion, $id, $slug);
 
-} elseif ($action === 'delete') {
+} 
+
+elseif ($action === 'delete') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         http_response_code(405);
@@ -36,15 +39,36 @@ if ($action === 'show') {
 
     \App\Controllers\ProjectsController\delete($connexion, $id, $slug);
 
-} elseif ($action === 'addForm') {
+} 
+
+elseif ($action === 'addForm') {
     // Affiche le formulaire d'ajout.
     \App\Controllers\ProjectsController\addForm($connexion);
 
-} elseif ($action === 'insert') {
+} 
+
+elseif ($action === 'insert') {
     // Enregistre un nouveau projet.
     \App\Controllers\ProjectsController\insert($connexion);
-    
-} else {
+
+} 
+
+elseif ($action === 'editForm') {
+    // Affiche le formulaire de modification.
+    $id = (int) ($_GET['id'] ?? 0);
+    $slug = $_GET['slug'] ?? '';
+
+    \App\Controllers\ProjectsController\editForm($connexion, $id, $slug);
+
+} 
+elseif ($action === 'update') {
+    // Enregistre les modifications.
+    $id = (int) ($_GET['id'] ?? 0);
+    $slug = $_GET['slug'] ?? '';
+
+    \App\Controllers\ProjectsController\update($connexion, $id, $slug);
+}
+else {
 
     \App\Controllers\ProjectsController\index($connexion);
 }
