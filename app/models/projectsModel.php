@@ -73,3 +73,21 @@ function delete(PDO $connexion, int $id): bool
         return false;
     }
 }
+
+// Ajoute un nouveau projet dans la base de données.
+function insert(PDO $connexion, array $project): bool
+{
+    $sql = "INSERT INTO projets (titre, resume, texte, dateCreation, image, creatif)
+            VALUES (:titre, :resume, :texte, :dateCreation, :image, :creatif)";
+
+    $rs = $connexion->prepare($sql);
+
+    return $rs->execute([
+        ':titre' => $project['titre'],
+        ':resume' => $project['resume'],
+        ':texte' => $project['texte'],
+        ':dateCreation' => $project['dateCreation'],
+        ':image' => $project['image'],
+        ':creatif' => $project['creatif']
+    ]);
+}

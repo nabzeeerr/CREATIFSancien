@@ -22,7 +22,7 @@ if ($action === 'show') {
     $slug = $_GET['slug'] ?? '';
 
     \App\Controllers\ProjectsController\confirmDelete($connexion, $id, $slug);
-    
+
 } elseif ($action === 'delete') {
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -36,6 +36,14 @@ if ($action === 'show') {
 
     \App\Controllers\ProjectsController\delete($connexion, $id, $slug);
 
+} elseif ($action === 'addForm') {
+    // Affiche le formulaire d'ajout.
+    \App\Controllers\ProjectsController\addForm($connexion);
+
+} elseif ($action === 'insert') {
+    // Enregistre un nouveau projet.
+    \App\Controllers\ProjectsController\insert($connexion);
+    
 } else {
 
     \App\Controllers\ProjectsController\index($connexion);

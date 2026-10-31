@@ -1,5 +1,11 @@
 RewriteEngine On
 
+# Redirige vers le formulaire d'ajout.
+RewriteRule ^projects/add/form\.html$ routers/projectsRouter.php?action=addForm [L,QSA]
+
+# Redirige vers l'enregistrement d'un projet.
+RewriteRule ^projects/add/insert\.html$ routers/projectsRouter.php?action=insert [L,QSA]
+
 # Redirige les URLs des projets vers le routeur.
 RewriteRule ^projects/([0-9]+)/([^/]+)\.html$ routers/projectsRouter.php?action=show&id=$1&slug=$2 [L,QSA]
 

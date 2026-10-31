@@ -86,3 +86,53 @@ function confirmDelete(PDO $connexion, int $id, string $slug): void
 
     require ROOT_PATH . '/app/views/deleteProject.php';
 }
+
+// Affiche le formulaire d'ajout d'un projet.
+function addForm(PDO $connexion): void
+{
+    // Récupère les créatifs pour la liste déroulante.
+    $creatifs = \App\Models\CreatifsModel\findAll($connexion);
+
+    require ROOT_PATH . '/app/views/addProject.php';
+}
+
+// Enregistre un nouveau projet.
+function insert(PDO $connexion): void
+{
+    // Vérifie que le formulaire a été envoyé en POST.
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        echo "Méthode non autorisée.";
+        return;
+    }
+
+    // Récupère les données du formulaire.
+    $project = [
+        'titre' => trim($_POST['titre'] ?? ''),
+        'resume' => trim($_POST['resume'] ?? ''),
+        'texte' => trim($_POST['texte'] ?? ''),
+        'dateCreation' => $_POST['dateCreation'] ?? '',
+        'image' => trim($_POST['image'] ?? ''),
+        'creatif' => (int) ($_POST['creatif'] ?? 0)
+    ];
+
+    // Vérifie les champs obligatoires.
+    if ($project['titre'] === '' || $project['dateCreation'] === '' || $project['creatif'] <= 0) {
+        http_response_code(400);
+        echo "Veuillez remplir les champs obligatoires.";
+        return;
+    }
+
+    // Insère le projet dans la base de données.
+    $success = \App\Models\ProjectsModel\insert($connexion, $project);
+
+    if (!$success) {
+        http_response_code(500);
+        echo "Impossible d'ajouter le projet.";
+        return;
+    }
+
+    // Retourne à la liste des projets.
+    header('Location: /CREATIFS/projects');
+    exit;
+}
