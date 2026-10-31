@@ -10,7 +10,7 @@
 
 <main class="container mt-5">
     <!-- Formulaire de création d'un projet -->
-    <form action="/CREATIFS/projects/add/insert.html" method="POST">
+    <form action="/CREATIFS/projects/add/insert.html" method="POST" enctype="multipart/form-data">
 
         <div class="mb-3">
             <label for="titre" class="form-label">Titre</label>
@@ -29,7 +29,13 @@
 
         <div class="mb-3">
             <label for="image" class="form-label">Photo</label>
-            <input type="text" name="image" id="image" class="form-control">
+            <input
+                type="file"
+                name="image"
+                id="image"
+                class="form-control"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+            >
         </div>
 
         <div class="mb-3">

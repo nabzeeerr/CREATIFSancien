@@ -8,8 +8,7 @@
 </header>
 
 <main class="container mt-5">
-    <form action="/CREATIFS/projects/<?= (int) $project['id'] ?>/<?= urlencode(slugify($project['titre'])) ?>/edit/update.html" method="POST">
-
+    <form action="/CREATIFS/projects/<?= (int) $project['id'] ?>/<?= urlencode(slugify($project['titre'])) ?>/edit/update.html" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="titre" class="form-label">Titre</label>
             <input type="text" name="titre" id="titre" class="form-control"
@@ -27,9 +26,19 @@
         </div>
 
         <div class="mb-3">
-            <label for="image" class="form-label">Photo</label>
-            <input type="text" name="image" id="image" class="form-control"
-                   value="<?= htmlspecialchars($project['image'] ?? '') ?>">
+            <label for="image" class="form-label">Nouvelle photo (facultatif)</label>
+
+            <?php if (!empty($project['image'])): ?>
+                <p>Photo actuelle : <?= htmlspecialchars($project['image']) ?></p>
+            <?php endif; ?>
+
+            <input
+                type="file"
+                name="image"
+                id="image"
+                class="form-control"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+            >
         </div>
 
         <div class="mb-3">
@@ -68,8 +77,8 @@
             <?php endforeach; ?>
         </div>
 
-        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
-        <a href="/CREATIFS/projects" class="btn btn-secondary">Annuler</a>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <button type="reset" class="btn btn-secondary">Réinitialiser</button>
     </form>
 </main>
 

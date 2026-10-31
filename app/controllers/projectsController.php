@@ -4,6 +4,47 @@ namespace App\Controllers\ProjectsController;
 
 use PDO;
 
+// Enregistre l'image envoyée et retourne son nom.
+function uploadImage(): string
+{
+    if (!isset($_FILES['image']) || $_FILES['image']['error'] === UPLOAD_ERR_NO_FILE) {
+        return '';
+    }
+
+    if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+        throw new \RuntimeException("Erreur lors de l'envoi de l'image.");
+    }
+
+    $extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+
+    $extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+    if (!in_array($extension, $extensions, true)) {
+        throw new \RuntimeException("Format d'image non accepté.");
+    }
+
+    if ($extension === 'jpeg') {
+        $extension = 'jpg';
+    }
+
+    if ($_FILES['image']['size'] > 5 * 1024 * 1024) {
+        throw new \RuntimeException("L'image ne peut pas dépasser 5 Mo.");
+    }
+
+    $filename = bin2hex(random_bytes(16)) . '.' . $extension;
+
+    $destination = ROOT_PATH . '/template/images/' . $filename;
+    if (!is_dir(dirname($destination)) || !is_writable(dirname($destination))) {
+    throw new \RuntimeException("Le dossier template/images est introuvable ou non accessible en écriture.");
+    }
+
+    if (!move_uploaded_file($_FILES['image']['tmp_name'], $destination)) {
+        throw new \RuntimeException("Impossible d'enregistrer l'image.");
+    }
+
+    return $filename;
+}
+
 // Affiche la liste des projets avec pagination.
 function index(PDO $connexion): void
 {
@@ -107,12 +148,20 @@ function insert(PDO $connexion): void
         return;
     }
 
+    try {
+        $image = uploadImage();
+    } catch (\RuntimeException $e) {
+        http_response_code(400);
+        echo $e->getMessage();
+        return;
+    }
+
     $project = [
         'titre' => trim($_POST['titre'] ?? ''),
         'resume' => trim($_POST['resume'] ?? ''),
         'texte' => trim($_POST['texte'] ?? ''),
         'dateCreation' => date('Y-m-d'),
-        'image' => trim($_POST['image'] ?? ''),
+        'image' => $image,
         'creatif' => (int) ($_POST['creatif'] ?? 0),
         'tags' => is_array($_POST['tags'] ?? null)
             ? array_values(array_filter(array_map('intval', $_POST['tags']), fn($id) => $id > 0))
@@ -174,12 +223,25 @@ function update(PDO $connexion, int $id, string $slug): void
         return;
     }
 
+    $image = $existingProject['image'] ?? '';
+
+    if (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
+    
+        try {
+            $image = uploadImage();
+        } catch (\RuntimeException $e) {
+            http_response_code(400);
+            echo $e->getMessage();
+            return;
+        }
+    }   
+
     $project = [
         'titre' => trim($_POST['titre'] ?? ''),
         'resume' => trim($_POST['resume'] ?? ''),
         'texte' => trim($_POST['texte'] ?? ''),
         'dateCreation' => $existingProject['dateCreation'],
-        'image' => trim($_POST['image'] ?? ''),
+        'image' => $image,
         'creatif' => (int) ($_POST['creatif'] ?? 0),
         'tags' => is_array($_POST['tags'] ?? null)
             ? array_values(array_filter(array_map('intval', $_POST['tags']), fn($id) => $id > 0))
