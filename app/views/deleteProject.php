@@ -8,7 +8,7 @@
         <strong><?= htmlspecialchars($project['titre']) ?></strong> ?
     </p>
 
-    <form action="/CREATIFS/routers/projectsRouter.php?action=delete" method="POST">
+    <form action="/CREATIFS/routers/deleteProjectRouter.php?action=delete&id=<?= (int) $project['id'] ?>&slug=<?= urlencode(slugify($project['titre'])) ?>" method="POST">
         <input type="hidden" name="id" value="<?= (int) $project['id'] ?>">
         <input type="hidden" name="slug" value="<?= htmlspecialchars(slugify($project['titre'])) ?>">
 

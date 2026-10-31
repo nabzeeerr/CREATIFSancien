@@ -39,9 +39,11 @@ $titrePage = htmlspecialchars($project['titre']) . " - CREA'TIFS";
 
                 <h4>Tags</h4>
                 <?php foreach ($tags as $tag): ?>
+
                     <span class="badge bg-secondary">
                         <?= htmlspecialchars($tag['nom']) ?>
                     </span>
+                    
                 <?php endforeach; ?>
             </article>
             <div class="mt-3">
@@ -52,11 +54,10 @@ $titrePage = htmlspecialchars($project['titre']) . " - CREA'TIFS";
                 </a>
 
                 <a class="btn btn-danger"
-                    href="/CREATIFS/routers/projectsRouter.php?action=confirmDelete&id=<?= (int) $project['id'] ?>&slug=<?= urlencode(slugify($project['titre'])) ?>"
-                >
+                    href="/CREATIFS/projects/delete/<?= (int) $project['id'] ?>/<?= urlencode(slugify($project['titre'])) ?>.html">
                     Supprimer ce projet
                 </a>
-                
+
             </div>
         </div>
 

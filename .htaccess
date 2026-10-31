@@ -1,19 +1,18 @@
 RewriteEngine On
 
-# Redirige vers le formulaire d'ajout.
-RewriteRule ^projects/add/form\.html$ routers/projectsRouter.php?action=addForm [L,QSA]
+# Ajout d'un projet.
+RewriteRule ^projects/add/form\.html$ routers/addProjectRouter.php?action=addForm [L,QSA]
+RewriteRule ^projects/add/insert\.html$ routers/addProjectRouter.php?action=insert [L,QSA]
 
-# Redirige vers l'enregistrement d'un projet.
-RewriteRule ^projects/add/insert\.html$ routers/projectsRouter.php?action=insert [L,QSA]
+# Modification d'un projet.
+RewriteRule ^projects/([0-9]+)/([^/]+)/edit/form\.html$ routers/editProjectRouter.php?action=editForm&id=$1&slug=$2 [L,QSA]
+RewriteRule ^projects/([0-9]+)/([^/]+)/edit/update\.html$ routers/editProjectRouter.php?action=update&id=$1&slug=$2 [L,QSA]
 
-# Affiche le formulaire de modification.
-RewriteRule ^projects/([0-9]+)/([^/]+)/edit/form\.html$ routers/projectsRouter.php?action=editForm&id=$1&slug=$2 [L,QSA]
+# Suppression d'un projet (confirmation et action).
+RewriteRule ^projects/delete/([0-9]+)/([^/]+)\.html$ routers/deleteProjectRouter.php?action=confirmDelete&id=$1&slug=$2 [L,QSA]
 
-# Enregistre les modifications.
-RewriteRule ^projects/([0-9]+)/([^/]+)/edit/update\.html$ routers/projectsRouter.php?action=update&id=$1&slug=$2 [L,QSA]
-
-# Redirige les URLs des projets vers le routeur.
+# Détails d'un projet.
 RewriteRule ^projects/([0-9]+)/([^/]+)\.html$ routers/projectsRouter.php?action=show&id=$1&slug=$2 [L,QSA]
 
-# Redirige la liste des projets.
+# Liste des projets.
 RewriteRule ^projects/?$ routers/projectsRouter.php [L,QSA]
