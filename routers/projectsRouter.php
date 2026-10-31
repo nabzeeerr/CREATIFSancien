@@ -10,11 +10,33 @@ require_once ROOT_PATH . '/app/controllers/projectsController.php';
 $action = $_GET['action'] ?? 'index';
 
 if ($action === 'show') {
-    // Affiche un projet précis.
+    
     $id = (int) ($_GET['id'] ?? 0);
     $slug = $_GET['slug'] ?? '';
+
     \App\Controllers\ProjectsController\show($connexion, $id, $slug);
+
+} elseif ($action === 'confirmDelete') {
+    // Affiche la confirmation de suppression.
+    $id = (int) ($_GET['id'] ?? 0);
+    $slug = $_GET['slug'] ?? '';
+
+    \App\Controllers\ProjectsController\confirmDelete($connexion, $id, $slug);
+    
+} elseif ($action === 'delete') {
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
+        echo "Méthode non autorisée.";
+        exit;
+    }
+
+    $id = (int) ($_POST['id'] ?? 0);
+    $slug = $_POST['slug'] ?? '';
+
+    \App\Controllers\ProjectsController\delete($connexion, $id, $slug);
+
 } else {
-    // Affiche la liste des projets.
+
     \App\Controllers\ProjectsController\index($connexion);
 }

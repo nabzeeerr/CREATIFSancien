@@ -49,3 +49,40 @@ function show(PDO $connexion, int $id, string $slug): void
 
     require ROOT_PATH . '/app/views/project.php';
 }
+
+function delete(PDO $connexion, int $id, string $slug): void
+{
+    $project = \App\Models\ProjectsModel\findById($connexion, $id);
+
+    if (!$project || slugify($project['titre']) !== $slug) {
+        http_response_code(404);
+        echo "Projet introuvable ou URL incorrecte.";
+        return;
+    }
+
+    $success = \App\Models\ProjectsModel\delete($connexion, $id);
+
+    if (!$success) {
+        http_response_code(500);
+        echo "Impossible de supprimer le projet.";
+        return;
+    }
+
+    header('Location: /CREATIFS/projects');
+    exit;
+}
+
+function confirmDelete(PDO $connexion, int $id, string $slug): void
+{
+
+    $project = \App\Models\ProjectsModel\findById($connexion, $id);
+
+    // Vérifie que le projet existe et que le slug est correct.
+    if (!$project || slugify($project['titre']) !== $slug) {
+        http_response_code(404);
+        echo "Projet introuvable ou URL incorrecte.";
+        return;
+    }
+
+    require ROOT_PATH . '/app/views/deleteProject.php';
+}

@@ -44,3 +44,32 @@ function findById(PDO $connexion, int $id): array|false
 
     return $rs->fetch(PDO::FETCH_ASSOC);
 }
+
+function delete(PDO $connexion, int $id): bool
+{
+    try {
+        $connexion->beginTransaction();
+
+        // Supprime les associations entre le projet et ses tags.
+        $sqlTags = "DELETE FROM projets_has_tags WHERE projet = :id";
+        $rsTags = $connexion->prepare($sqlTags);
+        $rsTags->bindValue(':id', $id, PDO::PARAM_INT);
+        $rsTags->execute();
+
+        // Supprime le projet.
+        $sqlProjet = "DELETE FROM projets WHERE id = :id";
+        $rsProjet = $connexion->prepare($sqlProjet);
+        $rsProjet->bindValue(':id', $id, PDO::PARAM_INT);
+        $rsProjet->execute();
+
+        $connexion->commit();
+
+        return $rsProjet->rowCount() > 0;
+    } catch (\Throwable $e) {
+        if ($connexion->inTransaction()) {
+            $connexion->rollBack();
+        }
+
+        return false;
+    }
+}

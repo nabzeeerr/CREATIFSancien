@@ -44,6 +44,13 @@ $titrePage = htmlspecialchars($project['titre']) . " - CREA'TIFS";
                     </span>
                 <?php endforeach; ?>
             </article>
+            <div class="mt-3">
+                <a class="btn btn-danger"
+                    href="/CREATIFS/routers/projectsRouter.php?action=confirmDelete&id=<?= (int) $project['id'] ?>&slug=<?= urlencode(slugify($project['titre'])) ?>"
+                >
+                    Supprimer ce projet
+                </a>
+            </div>
         </div>
 
         <?php require ROOT_PATH . '/app/views/partials/sidebar.php'; ?>
