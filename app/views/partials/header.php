@@ -11,7 +11,6 @@ $titrePage = $titrePage ?? "CREA'TIFS - Design capill'Hair";
 
     <title><?= htmlspecialchars($titrePage) ?></title>
 
-    <!-- Bootstrap -->
     <link href="/CREATIFS/template/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Styles du site -->

@@ -74,44 +74,111 @@ function delete(PDO $connexion, int $id): bool
     }
 }
 
-// Ajoute un nouveau projet dans la base de données.
+// Ajoute un projet et ses associations avec les tags.
 function insert(PDO $connexion, array $project): bool
 {
-    $sql = "INSERT INTO projets (titre, resume, texte, dateCreation, image, creatif)
-            VALUES (:titre, :resume, :texte, :dateCreation, :image, :creatif)";
+    try {
+        $connexion->beginTransaction();
 
-    $rs = $connexion->prepare($sql);
+        // Insère le projet.
+        $sql = "INSERT INTO projets (titre, resume, texte, dateCreation, image, creatif)
+                VALUES (:titre, :resume, :texte, :dateCreation, :image, :creatif)";
 
-    return $rs->execute([
-        ':titre' => $project['titre'],
-        ':resume' => $project['resume'],
-        ':texte' => $project['texte'],
-        ':dateCreation' => $project['dateCreation'],
-        ':image' => $project['image'],
-        ':creatif' => $project['creatif']
-    ]);
+        $rs = $connexion->prepare($sql);
+        $rs->execute([
+            ':titre' => $project['titre'],
+            ':resume' => $project['resume'],
+            ':texte' => $project['texte'],
+            ':dateCreation' => $project['dateCreation'],
+            ':image' => $project['image'],
+            ':creatif' => $project['creatif']
+        ]);
+
+        // Récupère l'identifiant du projet créé.
+        $projectId = (int) $connexion->lastInsertId();
+
+        // Enregistre les tags sélectionnés, s'il y en a.
+        if (!empty($project['tags'])) {
+            $sqlTag = "INSERT INTO projets_has_tags (projet, tag)
+                       VALUES (:projet, :tag)";
+
+            $rsTag = $connexion->prepare($sqlTag);
+
+            foreach ($project['tags'] as $tagId) {
+                $rsTag->execute([
+                    ':projet' => $projectId,
+                    ':tag' => $tagId
+                ]);
+            }
+        }
+
+        $connexion->commit();
+
+        return true;
+    } catch (\Throwable $e) {
+        if ($connexion->inTransaction()) {
+            $connexion->rollBack();
+        }
+
+        return false;
+    }
 }
 
+// Modifie un projet et remplace ses associations avec les tags.
 function update(PDO $connexion, int $id, array $project): bool
 {
-    $sql = "UPDATE projets
-            SET titre = :titre,
-                resume = :resume,
-                texte = :texte,
-                dateCreation = :dateCreation,
-                image = :image,
-                creatif = :creatif
-            WHERE id = :id";
+    try {
+        $connexion->beginTransaction();
 
-    $rs = $connexion->prepare($sql);
+        // Met à jour les informations du projet.
+        $sql = "UPDATE projets
+                SET titre = :titre,
+                    resume = :resume,
+                    texte = :texte,
+                    dateCreation = :dateCreation,
+                    image = :image,
+                    creatif = :creatif
+                WHERE id = :id";
 
-    return $rs->execute([
-        ':titre' => $project['titre'],
-        ':resume' => $project['resume'],
-        ':texte' => $project['texte'],
-        ':dateCreation' => $project['dateCreation'],
-        ':image' => $project['image'],
-        ':creatif' => $project['creatif'],
-        ':id' => $id
-    ]);
+        $rs = $connexion->prepare($sql);
+        $rs->execute([
+            ':titre' => $project['titre'],
+            ':resume' => $project['resume'],
+            ':texte' => $project['texte'],
+            ':dateCreation' => $project['dateCreation'],
+            ':image' => $project['image'],
+            ':creatif' => $project['creatif'],
+            ':id' => $id
+        ]);
+
+        // Supprime les anciennes associations.
+        $sqlDelete = "DELETE FROM projets_has_tags WHERE projet = :id";
+        $rsDelete = $connexion->prepare($sqlDelete);
+        $rsDelete->execute([':id' => $id]);
+
+        // Ajoute les nouvelles associations.
+        if (!empty($project['tags'])) {
+            $sqlTag = "INSERT INTO projets_has_tags (projet, tag)
+                       VALUES (:projet, :tag)";
+
+            $rsTag = $connexion->prepare($sqlTag);
+
+            foreach ($project['tags'] as $tagId) {
+                $rsTag->execute([
+                    ':projet' => $id,
+                    ':tag' => $tagId
+                ]);
+            }
+        }
+
+        $connexion->commit();
+
+        return true;
+    } catch (\Throwable $e) {
+        if ($connexion->inTransaction()) {
+            $connexion->rollBack();
+        }
+
+        return false;
+    }
 }

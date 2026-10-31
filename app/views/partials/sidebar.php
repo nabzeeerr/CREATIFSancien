@@ -12,7 +12,7 @@
                             src="/CREATIFS/template/images/<?= htmlspecialchars($creatif['image']) ?>"
                             alt=""
                         >
-                        <span><?= htmlspecialchars($creatif['pseudo']) ?></span>
+                        <span><?= htmlspecialchars($creatif['nom']) ?></span>
                         <span class="ct-count"><?= (int) $creatif['nombre_projets'] ?></span>
                     </li>
                 <?php endforeach; ?>

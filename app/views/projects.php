@@ -1,4 +1,3 @@
-
 <?php
 // Titre utilisé par le header commun.
 $titrePage = "Les projets - CREA'TIFS";

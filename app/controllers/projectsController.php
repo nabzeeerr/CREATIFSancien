@@ -93,37 +93,38 @@ function addForm(PDO $connexion): void
     // Récupère les créatifs pour la liste déroulante.
     $creatifs = \App\Models\CreatifsModel\findAll($connexion);
 
+    $tags = \App\Models\TagsModel\findAll($connexion);
+
     require ROOT_PATH . '/app/views/addProject.php';
 }
 
 // Enregistre un nouveau projet.
 function insert(PDO $connexion): void
 {
-    // Vérifie que le formulaire a été envoyé en POST.
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         http_response_code(405);
         echo "Méthode non autorisée.";
         return;
     }
 
-    // Récupère les données du formulaire.
     $project = [
         'titre' => trim($_POST['titre'] ?? ''),
         'resume' => trim($_POST['resume'] ?? ''),
         'texte' => trim($_POST['texte'] ?? ''),
-        'dateCreation' => $_POST['dateCreation'] ?? '',
+        'dateCreation' => date('Y-m-d'),
         'image' => trim($_POST['image'] ?? ''),
-        'creatif' => (int) ($_POST['creatif'] ?? 0)
+        'creatif' => (int) ($_POST['creatif'] ?? 0),
+        'tags' => is_array($_POST['tags'] ?? null)
+            ? array_values(array_filter(array_map('intval', $_POST['tags']), fn($id) => $id > 0))
+            : []
     ];
 
-    // Vérifie les champs obligatoires.
-    if ($project['titre'] === '' || $project['dateCreation'] === '' || $project['creatif'] <= 0) {
+    if ($project['titre'] === '' || $project['creatif'] <= 0) {
         http_response_code(400);
         echo "Veuillez remplir les champs obligatoires.";
         return;
     }
 
-    // Insère le projet dans la base de données.
     $success = \App\Models\ProjectsModel\insert($connexion, $project);
 
     if (!$success) {
@@ -132,7 +133,6 @@ function insert(PDO $connexion): void
         return;
     }
 
-    // Retourne à la liste des projets.
     header('Location: /CREATIFS/projects');
     exit;
 }
@@ -150,9 +150,14 @@ function editForm(PDO $connexion, int $id, string $slug): void
 
     $creatifs = \App\Models\CreatifsModel\findAll($connexion);
 
+    $tags = \App\Models\TagsModel\findAll($connexion);
+
+    $projectTags = \App\Models\TagsModel\findAllIdsByProjectId($connexion, $id);
+
     require ROOT_PATH . '/app/views/editProject.php';
 }
 
+// Enregistre les modifications d'un projet.
 function update(PDO $connexion, int $id, string $slug): void
 {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -173,12 +178,15 @@ function update(PDO $connexion, int $id, string $slug): void
         'titre' => trim($_POST['titre'] ?? ''),
         'resume' => trim($_POST['resume'] ?? ''),
         'texte' => trim($_POST['texte'] ?? ''),
-        'dateCreation' => $_POST['dateCreation'] ?? '',
+        'dateCreation' => $existingProject['dateCreation'],
         'image' => trim($_POST['image'] ?? ''),
-        'creatif' => (int) ($_POST['creatif'] ?? 0)
+        'creatif' => (int) ($_POST['creatif'] ?? 0),
+        'tags' => is_array($_POST['tags'] ?? null)
+            ? array_values(array_filter(array_map('intval', $_POST['tags']), fn($id) => $id > 0))
+            : []
     ];
 
-    if ($project['titre'] === '' || $project['dateCreation'] === '' || $project['creatif'] <= 0) {
+    if ($project['titre'] === '' || $project['creatif'] <= 0) {
         http_response_code(400);
         echo "Veuillez remplir les champs obligatoires.";
         return;

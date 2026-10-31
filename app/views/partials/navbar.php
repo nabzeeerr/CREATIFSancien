@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top ct-navbar">
     <div class="container">
-        <a class="navbar-brand" href="/CREATIFS/">
+        <a class="navbar-brand" href="/CREATIFS/projects">
             CREA'TIFS
         </a>
 
@@ -14,11 +14,11 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto align-items-lg-center">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/CREATIFS/">Les projets</a>
+                    <a class="nav-link" href="/CREATIFS/projects">Les projets</a>
                 </li>
                 <li class="nav-item">
                     <a class="ct-btn ct-btn--primary ct-btn--sm"
-                       href="/CREATIFS/routers/projectsRouter.php?action=add">
+                       href="/CREATIFS/projects/add/form.html">
                         Nouveau projet
                     </a>
                 </li>

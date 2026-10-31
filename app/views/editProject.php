@@ -22,18 +22,12 @@
         </div>
 
         <div class="mb-3">
-            <label for="texte" class="form-label">Texte</label>
+            <label for="texte" class="form-label">Description</label>
             <textarea name="texte" id="texte" class="form-control"><?= htmlspecialchars($project['texte'] ?? '') ?></textarea>
         </div>
 
         <div class="mb-3">
-            <label for="dateCreation" class="form-label">Date de création</label>
-            <input type="date" name="dateCreation" id="dateCreation" class="form-control"
-                   value="<?= htmlspecialchars($project['dateCreation']) ?>" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="image" class="form-label">Nom de l'image</label>
+            <label for="image" class="form-label">Photo</label>
             <input type="text" name="image" id="image" class="form-control"
                    value="<?= htmlspecialchars($project['image'] ?? '') ?>">
         </div>
@@ -49,6 +43,29 @@
                     </option>
                 <?php endforeach; ?>
             </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Tags (facultatif)</label>
+
+            <?php foreach ($tags as $tag): ?>
+                <div class="form-check">
+                    <input
+                        type="checkbox"
+                        name="tags[]"
+                        id="tag-<?= (int) $tag['id'] ?>"
+                        value="<?= (int) $tag['id'] ?>"
+                        class="form-check-input"
+                        <?= in_array((int) $tag['id'], $projectTags, true) ? 'checked' : '' ?>
+                    >
+                    <label
+                        for="tag-<?= (int) $tag['id'] ?>"
+                        class="form-check-label"
+                    >
+                        <?= htmlspecialchars($tag['nom']) ?>
+                    </label>
+                </div>
+            <?php endforeach; ?>
         </div>
 
         <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>

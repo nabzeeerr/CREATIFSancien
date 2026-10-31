@@ -7,7 +7,6 @@
     </div>
 </footer>
 
-<!-- JavaScript Bootstrap -->
 <script src="/CREATIFS/template/vendor/jquery/jquery.min.js"></script>
 <script src="/CREATIFS/template/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
